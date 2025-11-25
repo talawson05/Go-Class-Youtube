@@ -1,64 +1,66 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
-const (
-	// Only literals or compile time funcs can be consts. Read Only, concurrent safe
-	constA = 1
-	constB = 2 * 4 // 8
-	constC = constB << 3 // 64
-	constD = "a string"
-	constE = len(constD) // 8
-)
 
-var (
-	classVarA = 1
-	classVarB = 1.00
-)
-
-// Execute with: go run . < nums.txt
-// Or: cat nums.txt | go run .
 func main() {
-	fmt.Printf("constA: %v\n",constA)
-	fmt.Printf("constB: %v\n",constB)
-	fmt.Printf("constC: %v\n",constC)
-	fmt.Printf("constD: %v\n",constD)
-	fmt.Printf("constE: %v\n",constE)
+	/*
+	s := "élite"
 
-	fmt.Printf("classVarA: %8T, %[1]v\n", classVarA)
-	fmt.Printf("bclassVarB: %8T, %[1]v\n", classVarB)
+	fmt.Printf("%8T %[1]v %d\n", s, len(s)) // GOTCHA: shows 6 due to UTF-8 encoding
+	fmt.Printf("%8T %[1]v\n", []rune(s)) // characters
+	fmt.Printf("%8T %[1]v\n", []byte(s)) // UTF-8 of chacters
 
-	a := 2
-	b := 3.01
-	fmt.Printf("a: %16T, %[1]v\n", a)
-	fmt.Printf("b: %16T, %[1]v\n", b)
+	hw := "Hello, World"
+	hello := hw[:5]
+	world := hw[7:]
+	fmt.Println(hello)
+	fmt.Println(world)
 
-	a = int(b)
-	fmt.Printf("a: %16T, %[1]v\n", a)
+	phrase := "The quick brown fox"
+	a := len(phrase) // 19
+	b := phrase[:3] // The
+	c := phrase[4:9] // quick
+	d := phrase[:4] + "slow" + phrase[9:] // replaces "quick"
+	phrase += "es" // now plural (copied)
+	fmt.Println(a)
+	fmt.Println(b)
+	fmt.Println(c)
+	fmt.Println(d)
+	fmt.Println(phrase)
 
-	// defined as nil/zero, never null
-	var sum float64
-	var counter int
+	// Strings are passed by reference, thus aren't copied
 
-	for {
-		var val float64
 
-		_, err := fmt.Fscanln(os.Stdin, &val)
-		if err != nil {
-			break
-		}
+	astring := "a string"
 
-		sum += val
-		counter++
-	}
+	// strings.Contains(astring, "g") // true
+	// strings.Contains(astring, "x") // false
+	// strings.HasPrefix(astring, "a") // true
+	// strings.Index(astring, "string") // 2
 
-	if counter == 0 {
-		fmt.Fprintln(os.Stderr, "no values")
+	astring = strings.ToUpper(astring) // "A STRING"
+	fmt.Println(astring)
+	*/
+
+
+	// Execute with: go run . foo tony < text.txt
+	if len(os.Args) < 3 {
+		fmt.Fprintln(os.Stderr, "Not enough arguments")
 		os.Exit(-1)
 	}
 
-	fmt.Println("The average is", sum/float64(counter))
+	old, new := os.Args[1], os.Args[2]
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for scanner.Scan() {
+		s := strings.Split(scanner.Text(), old)
+		t := strings.Join(s, new)
+		fmt.Println(t)
+	}
 }
