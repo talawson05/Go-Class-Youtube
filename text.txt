@@ -1,4 +1,0 @@
-lorem ipsum foo bar
-foo foo foo
-bar bar bar
-fizz buzz bang
