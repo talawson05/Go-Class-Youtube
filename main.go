@@ -1,83 +1,51 @@
 package main
 
+import (
+	"bufio"
+	"fmt"
+	// "io/ioutil"
+	"strings"
+	// "io"
+	"os"
+)
 
 func main() {
 
-	// if a == b {
-	// 	fmt.Println("a equals b")
-	// } else {
-	// 	fmt.Println("a is not equal to b")
-	// }
+	// Execute with: go run . a.txt b.txt c.txt
+	// or: go run . *.txt
+	for _, fname := range os.Args[1:] {
+		file, err := os.Open(fname)
 
-	// if err := doSomething(); err != nil {
-	// 	return err
-	// }
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			continue // move onto next file
+		}
 
-	// // prints (0, 0) up to (9, 81)
-	// for i := 0; i < 10; i++ {
-	// 	fmt.Printf("(%d, %d)\n", i, i*i)
-	// }
-	
-	// // index only
-	// for i := range myRange {
-	// 	fmt.Println(i, myRange[i])
-	// }
+		// // CAT the file
+		// if _, err := io.Copy(os.Stdout, file); err != nil {
+		// 	fmt.Fprintln(os.Stderr, err)
+		// 	continue
+		// }
 
-	// // index and value
-	// for i, v := myRange {
-	// 	fmt.Println(i, v)
-	// }
+		// // calculate size of file
+		// data, err := ioutil.ReadAll(file)
+		// if err != nil {
+		// 	fmt.Fprintln(os.Stderr, err)
+		// 	continue
+		// }
+		// fmt.Println("The file has", len(data), "bytes")
 
-	// // infinite loop with break
-	// i, j := 0, 3
-	// for {
-	// 	i, j = i+ 50, j*j
-	// 	fmt.Println(i, j)
-	// 	if j > i {
-	// 		break
-	// 	}
+		// Recreate WordCount for a file
+		var lc, wc, cc int
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			s := scanner.Text()
+			wc += len(strings.Fields(s)) // splits based on spaces/tabs
+			cc += len(s)
+			lc++
+		}
+		fmt.Printf("%7d %7d %7d %s\n", lc, wc, cc, fname)
 
-	// 	// continue also exists to keep iterating
-	// }
-	
-	// // nested loops
-	// outer:  // label the outer loop
-	// 	for k := range testImemsMap { // keys
-	// 		for _, v := range returnedData { // values in list
-	// 			if k == v.ID { // found it
-	// 				continue outer // refer to label
-	// 			}
-	// 		}
-
-	// 		t.ErrorF("key not found: %s", k)
-	// 	}
-	
-	// switch a := f.Get(); a {
-	// case 0, 1, 2: 
-	// 	fmt.Println("underflow possible")
-
-	// case 3, 4, 5, 6, 7, 8:
-
-	// default:
-	// 	fmt.Println("warning: overload")
-	// }
-	// // alternatives may be empty, and do not fall through. Break not required
-
-	// // switch on "true"
-	// a := f.Get()
-
-	// switch {
-	// case a <= 2:
-	// 	fmt.Println("underflow possible")
-	// case a <= 8:
-	// 	// evaluated in order
-	// default:
-	// 	fmt.Println("warning: overload")
-	// }
-
-	// Package control visibility: capitalized starting character is exported, lower is package private
-	// Multiple files in same package, can see package private things
-
-	// A package can create a func init(){} which is implicitly called 
-
+		file.Close()
+	}
 }
