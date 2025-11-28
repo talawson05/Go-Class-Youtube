@@ -1,51 +1,66 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	// "io/ioutil"
-	"strings"
-	// "io"
-	"os"
 )
 
+// func fib() func() int {
+// 	a, b := 0, 1
+// 	return func() int {
+// 		a, b = b, a+b
+// 		return b
+// 	}
+// }
+
+// func do(d func()) {
+// 	d()
+// }
+
 func main() {
+	// f := fib()
+	// for x:= f(); x < 100; x = f() {
+	// 	fmt.Println(x)
+	// }
 
-	// Execute with: go run . a.txt b.txt c.txt
-	// or: go run . *.txt
-	for _, fname := range os.Args[1:] {
-		file, err := os.Open(fname)
+	// f, g := fib(), fib()
+	// fmt.Println(f(), f(),f(),f())
+	// fmt.Println(g(), g(),g(),g())
 
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			continue // move onto next file
+	// // Prints values of i as 0 through 3, but all live in same address
+	// for i := 0; i < 4; i++ {
+	// 	v := func() {
+	// 		fmt.Printf("%d @ %p\n", i, &i)
+	// 	}
+	// 	do(v)
+	// }
+
+
+	// // GOTCHA: Splitting the creation and calling of a closure, means the value is overwritten
+	// // As i is a reference to i not it's value
+	// // Update: no longer accurate, Go language changed in 1.22 so that variables in for loops will instantiate on every iteration
+	// s := make([]func(), 4)
+	// for i := 0; i < 4; i++ {
+	// 	s[i] = func() {
+	// 		fmt.Printf("%d @ %p \n", i, &i)
+	// 	}
+	// }
+
+	// for i := 0; i < 4; i++ {
+	// 	s[i]()
+	// }
+
+	// This way creates a new variable to close over, gives unique addresses
+	s := make([]func(), 4)
+	for i := 0; i < 4; i++ {
+		i2 := i //closure capture
+		s[i] = func() {
+			fmt.Printf("%d @ %p \n", i2, &i2)
 		}
-
-		// // CAT the file
-		// if _, err := io.Copy(os.Stdout, file); err != nil {
-		// 	fmt.Fprintln(os.Stderr, err)
-		// 	continue
-		// }
-
-		// // calculate size of file
-		// data, err := ioutil.ReadAll(file)
-		// if err != nil {
-		// 	fmt.Fprintln(os.Stderr, err)
-		// 	continue
-		// }
-		// fmt.Println("The file has", len(data), "bytes")
-
-		// Recreate WordCount for a file
-		var lc, wc, cc int
-		scanner := bufio.NewScanner(file)
-		for scanner.Scan() {
-			s := scanner.Text()
-			wc += len(strings.Fields(s)) // splits based on spaces/tabs
-			cc += len(s)
-			lc++
-		}
-		fmt.Printf("%7d %7d %7d %s\n", lc, wc, cc, fname)
-
-		file.Close()
 	}
+
+	for i := 0; i < 4; i++ {
+		s[i]()
+	}
+
+
 }
