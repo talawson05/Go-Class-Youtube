@@ -81,5 +81,4 @@ func main() {
 	// GOTCHA 2: even with capacity declared c can overwrite a if value is assigned before reallocation
 	// e.g. c[0] = 9 before doing c = append(c,5). 
 	// Once append has been done, it's safe to assign index 0 without overwriting
-
 }
